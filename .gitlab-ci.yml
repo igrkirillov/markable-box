@@ -1,0 +1,110 @@
+stages:
+  - build
+  - deploy
+ # - clean
+
+variables:
+  GIT_SSL_NO_VERIFY: "1"
+
+  MAVEN_OPTS: "-Xmx2g -Xms1g -Dmaven.repo.local=.m2"
+
+cache:
+  key: "$CI_COMMIT_REF_SLUG"
+  paths:
+    - .m2
+
+build:
+  image: $REGISTRY_URL/devops/docker/bo-build:$BUILD_IMAGE_TAG
+  stage: build
+  interruptible: true
+  variables:
+    GIT_STRATEGY: clone
+  script:
+    - useradd user
+    - su user -c "mvn clean verify"
+  only:
+    - merge_requests
+    - /^release.*$/
+  tags:
+    - gkr
+
+deploy:
+  image: $REGISTRY_URL/devops/docker/bo-build:$BUILD_IMAGE_TAG
+  stage: deploy
+  interruptible: true
+  variables:
+    GIT_STRATEGY: clone
+  script:
+    - useradd user
+    - su user -c "mvn clean deploy"
+  only:
+    - development
+    - /release.*$/
+  tags:
+    - gkr
+
+#test:
+#  image: $REGISTRY_URL/devops/docker/maven-jdk8-node12
+#  stage: verification
+#  interruptible: true
+#  variables:
+#    GIT_STRATEGY: clone
+#  script:
+#    - mvn verify -e
+#  only:
+#    - merge_requests
+#    - development
+#    - /^release.*$/
+#  tags:
+#    - gkr
+#  artifacts:
+#    paths:
+#      - .
+#    expire_in: 2 days
+#    when: on_failure
+
+#Deploy Snapshot:
+#  image: $REGISTRY_URL/devops/docker/maven-jdk8-node12
+#  stage: deploy
+#  interruptible: true
+#  variables:
+#    GIT_STRATEGY: clone
+#  script:
+#    - version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+#    - echo "Версия - ${version}"
+#    - is_snapshot=$(echo $version | grep -cP "SNAPSHOT$")
+#    - if [ "$is_snapshot" -eq "0" ]; then
+#    -   echo "На ветке $CI_COMMIT_REF_NAME разрешён deploy только SNAPSHOT версий"
+#    -   exit 1
+#    - fi
+#    - mvn --batch-mode --projects $PLUGIN_PROJECTS clean deploy -am
+#    - echo "Выпущена версия - ${version}"
+#  only:
+#    - development
+#  tags:
+#    - gkr-bo
+
+#Deploy Release:
+#  image: $REGISTRY_URL/devops/docker/maven-jdk8-node12
+#  stage: deploy
+#  interruptible: true
+#  variables:
+#    GIT_STRATEGY: clone
+#  script:
+#    - version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+#    - echo "Версия плагинов - ${version}"
+#    - is_snapshot=$(echo $version | grep -cP "SNAPSHOT$")
+#    - if [ "$is_snapshot" -eq "1" ]; then
+#    -   echo "На ветке $CI_COMMIT_REF_NAME разрешён deploy только релизных версий"
+#    -   exit 1
+#    - fi
+#    - mvn deploy
+#    - echo "Выпущена версия - ${version}"
+#    - tag="v${version}"
+#    - echo "Создаём тэг - ${tag}"
+#    - git tag $tag
+#    - git push origin $tag
+#  only:
+#    - development
+#  tags:
+#    - gkr
