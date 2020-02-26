@@ -1,19 +1,16 @@
 package ru.x5.bo.markable;
 
 import com.opentable.db.postgres.embedded.EmbeddedPostgres;
-import liquibase.integration.spring.SpringLiquibase;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import ru.x5.bo.boapi.ServletContainerInitializingListener.XRGFilters;
-import ru.x5.bo.markable.config.MarkableSpringConfiguration;
-import ru.x5.bo.markable.restapi.TobaccoListenerFromServletContainerLifecycleImpl;
+import ru.x5.bo.markable.config.MarkableServletContainerInitializingListenerImpl;
 import ru.x5.bo.requestprocessing.impl.SpringGkRequestProcessorImpl;
 
 import javax.servlet.Filter;
@@ -58,14 +55,6 @@ public class TestSpringConfiguration {
     }
 
     @Bean
-    public SpringLiquibase springLiquibase() {
-        SpringLiquibase springLiquibase = new SpringLiquibase();
-        springLiquibase.setDataSource(dataSource());
-        springLiquibase.setChangeLog("classpath:liquibase/test-changelog.xml");
-        return springLiquibase;
-    }
-
-    @Bean
     public SpringGkRequestProcessorImpl processor() {
         return new SpringGkRequestProcessorImpl();
     }
@@ -83,7 +72,7 @@ public class TestSpringConfiguration {
                     .authorizationFilter(authorizationFilter)
                     .mobileThinServicesEnabler(mobileThinServicesEnabler)
                     .build();
-            new TobaccoListenerFromServletContainerLifecycleImpl().servletContextInitialized(servletContext, filters);
+            new MarkableServletContainerInitializingListenerImpl().servletContextInitialized(servletContext, filters);
         };
     }
 

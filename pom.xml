@@ -34,23 +34,12 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <java.version>1.8</java.version>
-    <version.bo-markable>36.1.1-SNAPSHOT</version.bo-markable>
+    <version.bo-markable>36.1.777t-SNAPSHOT</version.bo-markable>
     <version.xrg-marking>1.0.10</version.xrg-marking>
-    <version.bo-bom>1.0.0</version.bo-bom>
+    <version.bo-bom>1.0.10</version.bo-bom>
     <version.jetty>9.4.19.v20190610</version.jetty>
+    <version.springboot>2.1.6.RELEASE</version.springboot>
   </properties>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>ru.x5.bo</groupId>
-        <artifactId>bo-bom</artifactId>
-        <version>${version.bo-bom}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <dependencies>
     <dependency>
@@ -66,13 +55,8 @@
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-test</artifactId>
-      <version>2.1.6.RELEASE</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
-      <version>2.1.6.RELEASE</version>
+      <version>${version.springboot}</version>
       <exclusions>
         <exclusion>
           <groupId>org.springframework.boot</groupId>
@@ -83,15 +67,14 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-jetty</artifactId>
-      <version>2.1.6.RELEASE</version>
+      <version>${version.springboot}</version>
     </dependency>
-<!--    <dependency>-->
-<!--      <groupId>org.eclipse.jetty.aggregate</groupId>-->
-<!--      <artifactId>jetty-all</artifactId>-->
-<!--      <version>${version.jetty}</version>-->
-<!--      <type>pom</type>-->
-<!--    </dependency>-->
     <dependency>
+      <groupId>org.eclipse.jetty.aggregate</groupId>
+      <artifactId>jetty-all</artifactId>
+      <version>${version.jetty}</version>
+    </dependency>
+   <!-- <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-server</artifactId>
       <version>${version.jetty}</version>
@@ -120,7 +103,7 @@
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-security</artifactId>
       <version>${version.jetty}</version>
-    </dependency>
+    </dependency>-->
 
     <dependency>
       <groupId>com.opentable.components</groupId>
@@ -128,9 +111,9 @@
       <version>0.13.1</version>
     </dependency>
     <dependency>
-      <groupId>org.liquibase</groupId>
-      <artifactId>liquibase-core</artifactId>
-      <version>3.4.2</version>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>3.2.4</version>
     </dependency>
   </dependencies>
 
