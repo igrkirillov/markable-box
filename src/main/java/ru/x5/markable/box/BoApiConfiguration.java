@@ -1,7 +1,9 @@
-package ru.x5.bo.markable;
+package ru.x5.markable.box;
 
 import com.opentable.db.postgres.embedded.EmbeddedPostgres;
+import org.springframework.boot.web.embedded.jetty.JettyServletWebServerFactory;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
+import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -10,7 +12,6 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import ru.x5.bo.boapi.ServletContainerInitializingListener.XRGFilters;
-import ru.x5.bo.markable.config.MarkableServletContainerInitializingListenerImpl;
 import ru.x5.bo.requestprocessing.impl.SpringGkRequestProcessorImpl;
 
 import javax.servlet.Filter;
@@ -25,7 +26,7 @@ import java.io.IOException;
 
 @Configuration
 @EnableTransactionManagement
-public class TestSpringConfiguration {
+public class BoApiConfiguration {
 
     @Bean
     public DataSource dataSource() {
@@ -55,6 +56,11 @@ public class TestSpringConfiguration {
     }
 
     @Bean
+    public ServletWebServerFactory servletWebServerFactory(){
+        return new JettyServletWebServerFactory();
+    }
+
+    @Bean
     public SpringGkRequestProcessorImpl processor() {
         return new SpringGkRequestProcessorImpl();
     }
@@ -72,7 +78,8 @@ public class TestSpringConfiguration {
                     .authorizationFilter(authorizationFilter)
                     .mobileThinServicesEnabler(mobileThinServicesEnabler)
                     .build();
-            new MarkableServletContainerInitializingListenerImpl().servletContextInitialized(servletContext, filters);
+
+//            new MarkableServletContainerInitializingListenerImpl().servletContextInitialized(servletContext, filters);
         };
     }
 
