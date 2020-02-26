@@ -11,12 +11,13 @@ public class SimpleTest {
 
     @Test
     public void startup() {
-        MarkableBox box = new MarkableBox()
-                .markapiImplConfig(MarkableSpringConfiguration.class);
-        box.start(new String[]{});
+        new MarkableBox()
+                .markapiImplConfig(MarkableSpringConfiguration.class)
+                .serverPort(9988)
+                .start();
 
         BORestTemplate rt = new BORestTemplate();
-        ResponseEntity<String> response = rt.getForEntity("http://localhost:8080/markable/main/greeting", String.class);
+        ResponseEntity<String> response = rt.getForEntity("http://localhost:9988/markable/main/greeting", String.class);
         System.out.println(response.getBody());
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }

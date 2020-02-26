@@ -7,6 +7,7 @@ import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -61,8 +62,10 @@ public class BoApiConfiguration {
     }
 
     @Bean
-    public ServletWebServerFactory servletWebServerFactory(){
-        return new JettyServletWebServerFactory();
+    public ServletWebServerFactory servletWebServerFactory(Environment env){
+        JettyServletWebServerFactory factory = new JettyServletWebServerFactory();
+        factory.setPort(Integer.parseInt(env.getProperty("server.port")));
+        return factory;
     }
 
     @Bean
