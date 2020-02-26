@@ -4,6 +4,7 @@ import com.opentable.db.postgres.embedded.EmbeddedPostgres;
 import org.springframework.boot.web.embedded.jetty.JettyServletWebServerFactory;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -11,6 +12,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import ru.x5.bo.boapi.ServletContainerInitializingListener;
 import ru.x5.bo.boapi.ServletContainerInitializingListener.XRGFilters;
 import ru.x5.bo.requestprocessing.impl.SpringGkRequestProcessorImpl;
 
@@ -23,6 +25,9 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.util.Map;
+
+import static org.springframework.web.context.WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE;
 
 @Configuration
 @EnableTransactionManagement
@@ -79,7 +84,15 @@ public class BoApiConfiguration {
                     .mobileThinServicesEnabler(mobileThinServicesEnabler)
                     .build();
 
-//            new MarkableServletContainerInitializingListenerImpl().servletContextInitialized(servletContext, filters);
+            ApplicationContext context = (ApplicationContext) servletContext.getAttribute(ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
+            Map<String, ServletContainerInitializingListener> beans = context.getBeansOfType(ServletContainerInitializingListener.class);
+            if (beans != null && !beans.isEmpty()) {
+                XRGFilters xrgFilters = XRGFilters.builder()
+                        .authorizationFilter(authorizationFilter)
+                        .mobileThinServicesEnabler(mobileThinServicesEnabler)
+                        .build();
+                beans.values().stream().forEach(bean -> bean.servletContextInitialized(servletContext, xrgFilters));
+            }
         };
     }
 
