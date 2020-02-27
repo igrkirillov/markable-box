@@ -23,6 +23,7 @@ public class MarkableBox {
     public void start() {
         start(new String[]{});
     }
+
     public void start(String[] args) {
         Map<String, Object> props = new HashMap<>();
         props.put("server.port", serverPort);
