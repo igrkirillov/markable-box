@@ -1,6 +1,8 @@
 package org.x5.bo.mbox;
 
 import com.opentable.db.postgres.embedded.EmbeddedPostgres;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.embedded.jetty.JettyServletWebServerFactory;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
@@ -33,6 +35,8 @@ import static org.springframework.web.context.WebApplicationContext.ROOT_WEB_APP
 @Configuration
 @EnableTransactionManagement
 public class BoApiConfiguration {
+
+    private static final Logger log = LoggerFactory.getLogger(BoApiConfiguration.class);
 
     @Bean
     public DataSource dataSource() {
@@ -101,11 +105,11 @@ public class BoApiConfiguration {
 
     public static class SimpleFilterAuthorizationFilter implements Filter {
         @Override
-        public void init(FilterConfig filterConfig) throws ServletException {
+        public void init(FilterConfig filterConfig) {
         }
         @Override
         public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-            System.out.println("request authorizationFilter " + request);
+            log.info("request authorizationFilter {}", request);
             chain.doFilter(request, response);
         }
         @Override
@@ -114,11 +118,11 @@ public class BoApiConfiguration {
     }
     public static class SimpleFilterMobileThinServicesEnabler implements Filter {
         @Override
-        public void init(FilterConfig filterConfig) throws ServletException {
+        public void init(FilterConfig filterConfig) {
         }
         @Override
         public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-            System.out.println("request mobileThinServicesEnabler " + request);
+            log.info("request mobileThinServicesEnabler {}", request);
             chain.doFilter(request, response);
         }
         @Override
