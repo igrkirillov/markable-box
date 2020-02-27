@@ -38,6 +38,7 @@ deploy:
     - useradd user
     - su user -c "mvn clean deploy"
   only:
+    - merge_requests
     - development
     - /release.*$/
   tags:
