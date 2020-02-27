@@ -1,6 +1,5 @@
 package ru.x5.bo.mbox;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +10,6 @@ import static org.junit.Assert.assertEquals;
 public class SimpleTest {
 
     @Test
-    @Ignore
     public void startup() {
         new MarkableBox()
                 .markapiImplConfig(MarkableSpringConfiguration.class)
