@@ -19,7 +19,8 @@ build:
   variables:
     GIT_STRATEGY: clone
   script:
-    - mvn clean deploy
+    - useradd user
+    - su user -c "mvn clean deploy"
   only:
     - development
     - /^release.*$/
