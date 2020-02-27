@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.x5.bo</groupId>
+  <groupId>ru.x5.bo</groupId>
   <artifactId>mbox</artifactId>
-  <version>1.0.0</version>
+  <version>2.0.0</version>
 
   <distributionManagement>
     <repository>
@@ -135,7 +135,7 @@
     <dependency>
       <groupId>ru.x5.bo</groupId>
       <artifactId>bo-tobacco</artifactId>
-      <version>36.1.60409tc5-SNAPSHOT</version>
+      <version>36.1.777t-SNAPSHOT</version>
       <scope>test</scope>
       <exclusions>
         <exclusion>

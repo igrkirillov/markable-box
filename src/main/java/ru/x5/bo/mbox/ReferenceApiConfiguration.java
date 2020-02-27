@@ -1,4 +1,4 @@
-package org.x5.bo.mbox;
+package ru.x5.bo.mbox;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;

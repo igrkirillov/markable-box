@@ -1,4 +1,4 @@
-package org.x5.bo.mbox;
+package ru.x5.bo.mbox;
 
 import org.junit.Ignore;
 import org.junit.Test;

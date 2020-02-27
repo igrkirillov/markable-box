@@ -1,4 +1,4 @@
-package org.x5.bo.mbox;
+package ru.x5.bo.mbox;
 
 import com.opentable.db.postgres.embedded.EmbeddedPostgres;
 import org.slf4j.Logger;
