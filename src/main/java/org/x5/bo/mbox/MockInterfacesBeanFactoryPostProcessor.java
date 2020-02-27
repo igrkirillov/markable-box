@@ -36,7 +36,7 @@ public class MockInterfacesBeanFactoryPostProcessor implements BeanFactoryPostPr
                 beanFactory.registerSingleton(iClass.getName(), Mockito.mock(iClass));
             }
         } catch (IOException | ClassNotFoundException e) {
-            throw new BeanDefinitionValidationException("Error of create bean", e);
+            throw new BeanDefinitionValidationException("Error while create bean", e);
         }
     }
 
