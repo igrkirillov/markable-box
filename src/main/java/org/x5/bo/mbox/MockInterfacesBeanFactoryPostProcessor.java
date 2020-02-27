@@ -1,4 +1,4 @@
-package ru.x5.markable.box;
+package org.x5.bo.mbox;
 
 import org.mockito.Mockito;
 import org.springframework.beans.BeansException;

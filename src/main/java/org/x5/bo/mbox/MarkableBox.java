@@ -1,6 +1,5 @@
-package ru.x5.markable.box;
+package org.x5.bo.mbox;
 
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 
 import java.util.HashMap;

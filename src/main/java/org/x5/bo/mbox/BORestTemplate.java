@@ -1,4 +1,4 @@
-package ru.x5.markable.box;
+package org.x5.bo.mbox;
 
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;

@@ -1,4 +1,4 @@
-package ru.x5.markable.box;
+package org.x5.bo.mbox;
 
 import com.opentable.db.postgres.embedded.EmbeddedPostgres;
 import org.springframework.boot.web.embedded.jetty.JettyServletWebServerFactory;
