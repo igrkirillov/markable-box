@@ -1,12 +1,11 @@
 stages:
   - build
-  - deploy
- # - clean
+  - clean
 
 variables:
   GIT_SSL_NO_VERIFY: "1"
 
-  MAVEN_OPTS: "-Xmx2g -Xms1g -Dmaven.repo.local=.m2"
+  MAVEN_OPTS: "-Xmx4g -Xms2g -Dmaven.repo.local=.m2"
 
 cache:
   key: "$CI_COMMIT_REF_SLUG"
@@ -20,27 +19,10 @@ build:
   variables:
     GIT_STRATEGY: clone
   script:
-    - useradd user
-    - su user -c "mvn clean verify"
+    - mvn clean deploy
   only:
-    - merge_requests
-    - /^release.*$/
-  tags:
-    - gkr
-
-deploy:
-  image: $REGISTRY_URL/devops/docker/bo-build:$BUILD_IMAGE_TAG
-  stage: deploy
-  interruptible: true
-  variables:
-    GIT_STRATEGY: clone
-  script:
-    - useradd user
-    - su user -c "mvn clean deploy"
-  only:
-    - merge_requests
     - development
-    - /release.*$/
+    - /^release.*$/
   tags:
     - gkr
 
