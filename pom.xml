@@ -47,7 +47,7 @@
     <dependency>
       <groupId>ru.x5.bo</groupId>
       <artifactId>bo-mark-api</artifactId>
-      <version>36.1.60409-SNAPSHOT</version>
+      <version>36.1.777t-SNAPSHOT</version>
     </dependency>
     <!--Spring-->
     <dependency>
@@ -135,7 +135,7 @@
     <dependency>
       <groupId>ru.x5.bo</groupId>
       <artifactId>bo-tobacco</artifactId>
-      <version>36.1.60409-SNAPSHOT</version>
+      <version>36.1.60409tc5-SNAPSHOT</version>
       <scope>test</scope>
       <exclusions>
         <exclusion>

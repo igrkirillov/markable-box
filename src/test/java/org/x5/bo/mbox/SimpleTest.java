@@ -3,7 +3,7 @@ package org.x5.bo.mbox;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.x5.bo.markable.config.MarkableSpringConfiguration;
+import ru.x5.bo.markable.config.MarkableSpringConfiguration;
 
 import static org.junit.Assert.assertEquals;
 
