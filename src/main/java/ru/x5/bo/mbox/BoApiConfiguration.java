@@ -3,6 +3,7 @@ package ru.x5.bo.mbox;
 import com.opentable.db.postgres.embedded.EmbeddedPostgres;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.web.embedded.jetty.JettyServletWebServerFactory;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
@@ -101,6 +102,11 @@ public class BoApiConfiguration {
                 beans.values().stream().forEach(bean -> bean.servletContextInitialized(servletContext, xrgFilters));
             }
         };
+    }
+
+    @Bean @Qualifier("boapi")
+    public MockInterfacesBeanFactoryPostProcessor beanFactoryPostProcessorBoApi() {
+        return new MockInterfacesBeanFactoryPostProcessor("ru.x5.bo.boapi");
     }
 
     public static class SimpleFilterAuthorizationFilter implements Filter {
