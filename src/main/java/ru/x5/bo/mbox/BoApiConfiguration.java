@@ -10,6 +10,7 @@ import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -34,7 +35,7 @@ import java.util.Map;
 import static org.springframework.web.context.WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE;
 
 @Configuration
-@EnableTransactionManagement
+@Import(TxSpringConfiguration.class)
 public class BoApiConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(BoApiConfiguration.class);
@@ -49,11 +50,6 @@ public class BoApiConfiguration {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Bean
-    public PlatformTransactionManager transactionManager() {
-        return new DataSourceTransactionManager(dataSource());
     }
 
     @Bean
