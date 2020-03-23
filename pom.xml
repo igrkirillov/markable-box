@@ -6,7 +6,7 @@
 
   <groupId>ru.x5.bo</groupId>
   <artifactId>mbox</artifactId>
-  <version>2.0.4</version>
+  <version>2.0.5</version>
 
   <distributionManagement>
     <repository>
@@ -37,7 +37,7 @@
     <version.xrg-marking>1.0.10</version.xrg-marking>
     <version.bo-bom>1.0.10</version.bo-bom>
     <version.jetty>9.4.19.v20190610</version.jetty>
-    <version.springboot>2.1.6.RELEASE</version.springboot>
+    <version.springboot>2.2.0.RELEASE</version.springboot>
     <version.spring>5.2.0.RELEASE</version.spring>
     <version.spring-jdbc>1.0.9.RELEASE</version.spring-jdbc>
     <version.spring-data-commons>2.1.9.RELEASE</version.spring-data-commons>
@@ -106,6 +106,10 @@
         <exclusion>
           <groupId>org.springframework.boot</groupId>
           <artifactId>spring-boot-starter-logging</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-json</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
