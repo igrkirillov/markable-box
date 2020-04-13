@@ -1,11 +1,16 @@
 stages:
   - build
-  - clean
+  - tests
+  - deploy
 
 variables:
+  PROJECT_NAME: "MBOX"
+  PROJECT_KEY: "mbox"
   GIT_SSL_NO_VERIFY: "1"
 
-  MAVEN_OPTS: "-Xmx4g -Xms2g -Dmaven.repo.local=.m2"
+  BUILD_OPTS: "--batch-mode -DskipTests=true -e"
+  TEST_OPTS: "-DskipTests=false -DtestFailureIgnore=false "
+  MAVEN_OPTS: "-Xmx2g -Xms1g -Dmaven.repo.local=.m2 -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=INFO"
 
 cache:
   key: "$CI_COMMIT_REF_SLUG"
@@ -20,75 +25,45 @@ build:
     GIT_STRATEGY: clone
   script:
     - useradd user
-    - su user -c "mvn clean deploy"
+    - su user -c "mvn clean verify $BUILD_OPTS"
   only:
+    - merge_requests
     - development
-    - /^release.*$/
   tags:
     - gkr
 
-#test:
-#  image: $REGISTRY_URL/devops/docker/maven-jdk8-node12
-#  stage: verification
-#  interruptible: true
-#  variables:
-#    GIT_STRATEGY: clone
-#  script:
-#    - mvn verify -e
-#  only:
-#    - merge_requests
-#    - development
-#    - /^release.*$/
-#  tags:
-#    - gkr
-#  artifacts:
-#    paths:
-#      - .
-#    expire_in: 2 days
-#    when: on_failure
 
-#Deploy Snapshot:
-#  image: $REGISTRY_URL/devops/docker/maven-jdk8-node12
-#  stage: deploy
-#  interruptible: true
-#  variables:
-#    GIT_STRATEGY: clone
-#  script:
-#    - version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-#    - echo "Версия - ${version}"
-#    - is_snapshot=$(echo $version | grep -cP "SNAPSHOT$")
-#    - if [ "$is_snapshot" -eq "0" ]; then
-#    -   echo "На ветке $CI_COMMIT_REF_NAME разрешён deploy только SNAPSHOT версий"
-#    -   exit 1
-#    - fi
-#    - mvn --batch-mode --projects $PLUGIN_PROJECTS clean deploy -am
-#    - echo "Выпущена версия - ${version}"
-#  only:
-#    - development
-#  tags:
-#    - gkr-bo
+unit tests:
+  image: $REGISTRY_URL/devops/docker/bo-build:$BUILD_IMAGE_TAG
+  stage: tests
+  interruptible: true
+  variables:
+    GIT_STRATEGY: clone
+  script:
+    - useradd user
+    - su user -c "mvn test $TEST_OPTS"
+  only:
+    - merge_requests
+    - development
+  tags:
+    - gkr
+  artifacts:
+    reports:
+      junit:
+        - target/surefire-reports/TEST-*.xml
+        - target/failsafe-reports/TEST-*.xml
 
-#Deploy Release:
-#  image: $REGISTRY_URL/devops/docker/maven-jdk8-node12
-#  stage: deploy
-#  interruptible: true
-#  variables:
-#    GIT_STRATEGY: clone
-#  script:
-#    - version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-#    - echo "Версия плагинов - ${version}"
-#    - is_snapshot=$(echo $version | grep -cP "SNAPSHOT$")
-#    - if [ "$is_snapshot" -eq "1" ]; then
-#    -   echo "На ветке $CI_COMMIT_REF_NAME разрешён deploy только релизных версий"
-#    -   exit 1
-#    - fi
-#    - mvn deploy
-#    - echo "Выпущена версия - ${version}"
-#    - tag="v${version}"
-#    - echo "Создаём тэг - ${tag}"
-#    - git tag $tag
-#    - git push origin $tag
-#  only:
-#    - development
-#  tags:
-#    - gkr
+deploy:
+  image: $REGISTRY_URL/devops/docker/bo-build:$BUILD_IMAGE_TAG
+  stage: deploy
+  interruptible: true
+  variables:
+    GIT_STRATEGY: fetch
+  script:
+    - useradd user
+    - su user -c "mvn deploy $BUILD_OPTS"
+  only:
+    - merge_requests
+    - development
+  tags:
+    - gkr
