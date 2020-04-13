@@ -29,11 +29,9 @@ public class MarkableBox {
         props.put("server.port", serverPort);
 
         new SpringApplicationBuilder(
-                new Class[]{
-                        BoApiConfiguration.class,
-                        ReferenceApiConfiguration.class,
-                        SubdocsAndAddonsApiConfiguration.class,
-                        markapiImplConfig})
+                BoConfiguration.class,
+                ReferenceApiConfiguration.class,
+                BoApiConfiguration.class, markapiImplConfig)
                 .properties(props)
                 .run(args);
     }
