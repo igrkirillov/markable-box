@@ -10,7 +10,7 @@ import static org.junit.Assert.assertEquals;
 
 public class SimpleTest {
 
-    @Test @Ignore
+    @Test
     public void startup() {
         new MarkableBox()
                 .markapiImplConfig(MarkableSpringConfiguration.class)
