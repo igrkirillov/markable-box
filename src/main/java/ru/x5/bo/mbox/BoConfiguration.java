@@ -1,6 +1,7 @@
 package ru.x5.bo.mbox;
 
 import com.opentable.db.postgres.embedded.EmbeddedPostgres;
+import org.apache.activemq.spring.ActiveMQConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.embedded.jetty.JettyServletWebServerFactory;
@@ -13,10 +14,16 @@ import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jms.annotation.JmsListenerAnnotationBeanPostProcessor;
+import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
+import org.springframework.jms.config.JmsListenerEndpointRegistry;
+import org.springframework.jms.connection.JmsTransactionManager;
+import org.springframework.jms.core.JmsTemplate;
 import ru.x5.bo.boapi.ServletContainerInitializingListener;
 import ru.x5.bo.boapi.ServletContainerInitializingListener.XRGFilters;
 import ru.x5.bo.requestprocessing.impl.SpringGkRequestProcessorImpl;
 
+import javax.jms.ConnectionFactory;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -86,14 +93,54 @@ public class BoConfiguration {
 
             ApplicationContext context = (ApplicationContext) servletContext.getAttribute(ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
             Map<String, ServletContainerInitializingListener> beans = context.getBeansOfType(ServletContainerInitializingListener.class);
-            if (beans != null && !beans.isEmpty()) {
+            if (!beans.isEmpty()) {
                 XRGFilters xrgFilters = XRGFilters.builder()
                         .authorizationFilter(authorizationFilter)
                         .mobileThinServicesEnabler(mobileThinServicesEnabler)
                         .build();
-                beans.values().stream().forEach(bean -> bean.servletContextInitialized(servletContext, xrgFilters));
+                beans.values().forEach(bean -> bean.servletContextInitialized(servletContext, xrgFilters));
             }
         };
+    }
+
+    @Bean("amqJmsConnectionFactory")
+    public ConnectionFactory jmsConnectionFactory() {
+        ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory();
+        connectionFactory.setBrokerURL("vm://localhost?broker.persistent=false");
+        connectionFactory.setUserName("admin");
+        connectionFactory.setPassword("admin");
+        return connectionFactory;
+    }
+
+    @Bean("jmsTemplate")
+    public JmsTemplate jmsTemplate() {
+        JmsTemplate template = new JmsTemplate();
+        template.setConnectionFactory(jmsConnectionFactory());
+        return template;
+    }
+
+    @Bean("jmsListenerContainerFactory")
+    public DefaultJmsListenerContainerFactory defaultJmsListenerContainerFactory() {
+        DefaultJmsListenerContainerFactory jmsListenerContainerFactory = new DefaultJmsListenerContainerFactory();
+        jmsListenerContainerFactory.setConnectionFactory(jmsConnectionFactory());
+        return jmsListenerContainerFactory;
+    }
+
+    @Bean
+    public JmsListenerAnnotationBeanPostProcessor jmsListenerAnnotationBeanPostProcessor() {
+        JmsListenerAnnotationBeanPostProcessor processor = new JmsListenerAnnotationBeanPostProcessor();
+        processor.setContainerFactoryBeanName("jmsListenerContainerFactory");
+        return processor;
+    }
+
+    @Bean ("org.springframework.jms.config.internalJmsListenerEndpointRegistry")
+    public JmsListenerEndpointRegistry jmsListenerEndpointRegistry() {
+        return new JmsListenerEndpointRegistry();
+    }
+
+    @Bean
+    public JmsTransactionManager jmsTransactionManager() {
+        return new JmsTransactionManager(jmsConnectionFactory());
     }
 
     public static class SimpleFilterAuthorizationFilter implements Filter {
