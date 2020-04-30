@@ -10,6 +10,11 @@ import static org.junit.Assert.assertEquals;
 
 public class SimpleTest {
 
+    /**
+     * Игнорим, чтобы не было обратной петли на табак.
+     * Удобно тест запускать локально.
+     */
+    @Ignore
     @Test
     public void startup() {
         new MarkableBox()
